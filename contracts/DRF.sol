@@ -13,7 +13,7 @@ contract DRF is Context, IERC20, IERC20Metadata {
     string private constant _symbol = "DRF";
     string private constant _version = "1.0";
     uint8  private constant _decimals = 18;
-    uint256 private _totalSupply = 100000000e18;  //100 million DRF
+    uint256 private _totalSupply = 100000000e18;  // 100 million DRF
 
     mapping(address => uint256) private _balances;
     mapping(address => mapping(address => uint256)) private _allowances;

@@ -47,7 +47,7 @@ contract PrivateVestingVault is Ownable {
     /// @param amount The token amount to lock 
     function lockToken(uint256 amount) external onlyOwner {
         totalVestingAmount = totalVestingAmount + amount;
-        ///@dev require owner approve
+        // require owner approve
         require(IERC20(token).transferFrom(msg.sender, address(this), amount), "PVV_LT: TOKEN_TRANSFER_ERR");
     }
 
