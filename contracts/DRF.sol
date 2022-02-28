@@ -25,16 +25,20 @@ contract DRF is Context, IERC20, IERC20Metadata {
         address strategicReserveAccount, 
         address communityFundAccount
     ) {
-        _balances[founderTeamAccount] = _totalSupply * 15 / 100;
-        _balances[peInvestorsAccount] = _totalSupply * 15 / 100;
-        _balances[publicSaleAccount] = _totalSupply * 5 / 100;
-        _balances[strategicReserveAccount] = _totalSupply * 5 / 100;
-        _balances[communityFundAccount] = _totalSupply * 60 / 100;
-        emit Transfer(address(0), founderTeamAccount, _balances[founderTeamAccount]);
-        emit Transfer(address(0), peInvestorsAccount, _balances[peInvestorsAccount]);
-        emit Transfer(address(0), publicSaleAccount, _balances[publicSaleAccount]);
-        emit Transfer(address(0), strategicReserveAccount, _balances[strategicReserveAccount]);
-        emit Transfer(address(0), communityFundAccount, _balances[communityFundAccount]);
+        _balances[founderTeamAccount] += _totalSupply * 15 / 100;
+        emit Transfer(address(0), founderTeamAccount, _totalSupply * 15 / 100);
+
+        _balances[peInvestorsAccount] += _totalSupply * 15 / 100;
+        emit Transfer(address(0), peInvestorsAccount, _totalSupply * 15 / 100);
+
+        _balances[publicSaleAccount] += _totalSupply * 5 / 100;
+        emit Transfer(address(0), publicSaleAccount, _totalSupply * 5 / 100);
+
+        _balances[strategicReserveAccount] += _totalSupply * 5 / 100;
+        emit Transfer(address(0), strategicReserveAccount, _totalSupply * 5 / 100);
+
+        _balances[communityFundAccount] += _totalSupply * 60 / 100;
+        emit Transfer(address(0), communityFundAccount, _totalSupply * 60 / 100);
     }
 
     /// @notice Returns the name of the token
