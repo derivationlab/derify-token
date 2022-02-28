@@ -22,7 +22,7 @@ contract CommunityVestingVault is Ownable {
     /// @notice The total vesting amount left 
     uint256 public totalVestingAmount;
     /// @notice The grants added 
-    mapping (address => Grant) private grants;
+    mapping(address => Grant) private grants;
     /// @notice The all recipients of grants 
     address[] allRecipients;
     /// @notice The max days of the vesting cliff
@@ -37,9 +37,7 @@ contract CommunityVestingVault is Ownable {
     /// @notice Emitted when grant revoked
     event GrantRevoked(address recipient, uint256 amountVested, uint256 amountNotVested);
 
-    constructor(
-        address _token
-    ) {
+    constructor(address _token) {
         require(_token != address(0), "CVV_C: ZERO_ADDRESS");
         token = _token;
     }
@@ -108,10 +106,7 @@ contract CommunityVestingVault is Ownable {
 
     /// @notice Revoke grant by owner
     /// @param recipient The recipient address
-    function revokeGrant(address recipient) 
-        external 
-        onlyOwner
-    {
+    function revokeGrant(address recipient) external onlyOwner {
         // calculate vested days and amount, not vested amount
         Grant storage grant = grants[recipient];
         (, uint256 amountVested) = calculateGrantClaim(recipient);
