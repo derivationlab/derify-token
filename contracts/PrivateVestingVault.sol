@@ -31,6 +31,8 @@ contract PrivateVestingVault is Ownable {
     /// @notice The max days of the vesting duration
     uint16 constant DURATION_MAX_DAYS = 25 * 365;
 
+    /// @notice Emitted when lock token
+    event TokenLocked(address indexed owner, uint256 amount, uint256 timestamp);
     /// @notice Emitted when grant added
     event GrantAdded(address indexed recipient, uint256 amount, uint256 startVestingAmount, uint16 vestingDuration, uint16 vestingCliffInDays, uint256 timestamp);
     /// @notice Emitted when grant token claimed
@@ -49,6 +51,8 @@ contract PrivateVestingVault is Ownable {
         totalVestingAmount = totalVestingAmount + amount;
         // require owner approve
         require(IERC20(token).transferFrom(msg.sender, address(this), amount), "PVV_LT: TOKEN_TRANSFER_ERR");
+        // emit event
+        emit TokenLocked(msg.sender, amount, currentTime());
     }
 
     /// @notice Add grant by owner
