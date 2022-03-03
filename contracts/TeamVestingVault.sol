@@ -156,17 +156,17 @@ contract TeamVestingVault is Ownable {
 
     /// @notice Get grant 
     /// @param recipient The recipient address
-    function getGrant(address recipient) public view returns(Grant memory) {
+    function getGrant(address recipient) external view returns(Grant memory) {
         return grants[recipient];
     }
 
     /// @notice Get total vesting amount left
-    function getTotalVestingAmount() public view returns(uint256) {
+    function getTotalVestingAmount() external view returns(uint256) {
         return totalVestingAmount;
     }
 
     /// @notice Get all recipients
-    function getAllRecipients() public view returns(address[] memory) {
+    function getAllRecipients() external view returns(address[] memory) {
         return allRecipients;
     }
 
