@@ -45,7 +45,7 @@ contract TeamVestingVault is Ownable {
     event GrantTokensClaimed(address indexed recipient, uint256 amountClaimed);
     /// @notice Emitted when grant revoked
     event GrantRevoked(address recipient, uint256 amountVested, uint256 amountNotVested);
-     /// @notice Emitted when lock token
+    /// @notice Emitted when change timelock status of function
     event TimeLocked(Functions fn, uint256 timestamp);
 
     constructor(address _token) {
@@ -55,7 +55,7 @@ contract TeamVestingVault is Ownable {
 
     /// @notice The modifier notLocked for timelokc of function
     modifier notLocked(Functions _fn) {
-     require(timelock[_fn] != 0 && timelock[_fn] <= block.timestamp, "CVV_NL: FUNC_TIMELOCKED");
+     require(timelock[_fn] != 0 && timelock[_fn] <= block.timestamp, "TVV_TL: FUNC_TIMELOCKED");
      _;
    }
 
