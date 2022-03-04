@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-pragma solidity ^0.8.0;
+pragma solidity 0.8.4;
 
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -31,24 +31,60 @@ contract PrivateVestingVault is Ownable {
     /// @notice The max days of the vesting duration
     uint16 constant DURATION_MAX_DAYS = 25 * 365;
 
+    /// @notice enum of functions with timelock
+    enum Functions { LOCK, ADD, REVOKE }
+    /// @notice time lock period
+    uint256 private constant _TIMELOCK = 1 days;
+    /// @notice locked timestamp of functions
+    mapping(Functions => uint256) public timelock;
+
+    /// @notice Emitted when lock token
+    event TokenLocked(address indexed owner, uint256 amount, uint256 totalVestingAmount, uint256 timestamp);
     /// @notice Emitted when grant added
     event GrantAdded(address indexed recipient, uint256 amount, uint256 startVestingAmount, uint16 vestingDuration, uint16 vestingCliffInDays, uint256 timestamp);
     /// @notice Emitted when grant token claimed
     event GrantTokensClaimed(address indexed recipient, uint256 amountClaimed);
     /// @notice Emitted when grant revoked
     event GrantRevoked(address recipient, uint256 amountVested, uint256 amountNotVested);
+    /// @notice Emitted when change timelock status of function
+    event TimeLocked(Functions fn, uint256 timestamp);
 
     constructor(address _token) {
         require(_token != address(0), "PVV_C: ZERO_ADDRESS");
         token = _token;
     }
 
+    /// @notice The modifier notLocked for timelokc of function
+    modifier notLocked(Functions _fn) {
+     require(timelock[_fn] != 0 && timelock[_fn] <= block.timestamp, "PVV_TL: FUNC_TIMELOCKED");
+     _;
+   }
+
+    /// @notice Unlock timelock of function
+    function unlockFunction(Functions _fn) external onlyOwner {
+        timelock[_fn] = block.timestamp + _TIMELOCK;
+        // emit event
+        emit TimeLocked(_fn, timelock[_fn]);
+    }
+    
+    /// @notice Lock timelock of function
+    function lockFunction(Functions _fn) external onlyOwner {
+        timelock[_fn] = 0;
+        // emit event
+        emit TimeLocked(_fn, timelock[_fn]);
+    }
+
     /// @notice Lock token from owner to contract
     /// @param amount The token amount to lock 
-    function lockToken(uint256 amount) external onlyOwner {
+    function lockToken(uint256 amount) external onlyOwner notLocked(Functions.LOCK) {
         totalVestingAmount = totalVestingAmount + amount;
         // require owner approve
         require(IERC20(token).transferFrom(msg.sender, address(this), amount), "PVV_LT: TOKEN_TRANSFER_ERR");
+        // emit event
+        emit TokenLocked(msg.sender, amount, totalVestingAmount, currentTime());
+        // lock function
+        timelock[Functions.LOCK] = 0;
+        emit TimeLocked(Functions.LOCK, timelock[Functions.LOCK]);
     }
 
     /// @notice Add grant by owner
@@ -66,6 +102,7 @@ contract PrivateVestingVault is Ownable {
     ) 
         external
         onlyOwner
+        notLocked(Functions.ADD)
     {
         // check variables
         require(grants[recipient].amount == 0, "PVV_AG: GRANT_EXISTS");
@@ -91,6 +128,9 @@ contract PrivateVestingVault is Ownable {
         allRecipients.push(recipient);
         // emit event
         emit GrantAdded(recipient, amount, startVestingAmount, vestingDurationInDays, vestingCliffInDays, currentTime());
+        // lock function
+        timelock[Functions.ADD] = 0;
+        emit TimeLocked(Functions.ADD, timelock[Functions.ADD]);
     }
 
     /// @notice Claim vested tokens by recipient
@@ -110,7 +150,7 @@ contract PrivateVestingVault is Ownable {
 
     /// @notice Revoke grant by owner
     /// @param recipient The recipient address
-    function revokeGrant(address recipient) external onlyOwner {
+    function revokeGrant(address recipient) external onlyOwner notLocked(Functions.REVOKE) {
         // calculate vested days and amount, not vested amount
         Grant storage grant = grants[recipient];
         (, uint256 amountVested) = calculateGrantClaim(recipient);
@@ -129,6 +169,9 @@ contract PrivateVestingVault is Ownable {
         require(IERC20(token).transfer(recipient, amountVested), "PVV_RG: TOKEN_TRANSFER_ERR");
         // emit event
         emit GrantRevoked(recipient, amountVested, amountNotVested);
+        // lock function
+        timelock[Functions.REVOKE] = 0;
+        emit TimeLocked(Functions.REVOKE, timelock[Functions.REVOKE]);
     }
 
     /// @notice Calculate vested days and amount
@@ -164,17 +207,17 @@ contract PrivateVestingVault is Ownable {
 
     /// @notice Get grant 
     /// @param recipient The recipient address
-    function getGrant(address recipient) public view returns(Grant memory) {
+    function getGrant(address recipient) external view returns(Grant memory) {
         return grants[recipient];
     }
 
     /// @notice Get total vesting amount left
-    function getTotalVestingAmount() public view returns(uint256) {
+    function getTotalVestingAmount() external view returns(uint256) {
         return totalVestingAmount;
     }
 
     /// @notice Get all recipients
-    function getAllRecipients() public view returns(address[] memory) {
+    function getAllRecipients() external view returns(address[] memory) {
         return allRecipients;
     }
 

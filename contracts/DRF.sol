@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-pragma solidity ^0.8.0;
+pragma solidity 0.8.4;
 
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import '@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol';
@@ -13,7 +13,7 @@ contract DRF is Context, IERC20, IERC20Metadata {
     string private constant _symbol = "DRF";
     string private constant _version = "1.0";
     uint8  private constant _decimals = 18;
-    uint256 private _totalSupply = 100000000e18;  // 100 million DRF
+    uint256 private constant _totalSupply = 100000000e18;  // 100 million DRF
 
     mapping(address => uint256) private _balances;
     mapping(address => mapping(address => uint256)) private _allowances;
@@ -42,32 +42,32 @@ contract DRF is Context, IERC20, IERC20Metadata {
     }
 
     /// @notice Returns the name of the token
-    function name() public view virtual override returns (string memory) {
+    function name() external view virtual override returns (string memory) {
         return _name;
     }
 
     /// @notice Returns the symbol of the token
-    function symbol() public view virtual override returns (string memory) {
+    function symbol() external view virtual override returns (string memory) {
         return _symbol;
     }
 
     /// @notice Returns the number of decimals used to get its user representation
-    function decimals() public view virtual override returns (uint8) {
+    function decimals() external view virtual override returns (uint8) {
         return _decimals;
     }
 
     /// @notice Returns the version of the token
-    function version() public view virtual returns (string memory) {
+    function version() external view virtual returns (string memory) {
         return _version;
     }
 
     /// @notice Returns the totalSupply of the token
-    function totalSupply() public view virtual override returns (uint256) {
+    function totalSupply() external view virtual override returns (uint256) {
         return _totalSupply;
     }
 
     /// @notice Returns the amount of tokens owned by `account`
-    function balanceOf(address account) public view virtual override returns (uint256) {
+    function balanceOf(address account) external view virtual override returns (uint256) {
         return _balances[account];
     }
 
@@ -77,21 +77,21 @@ contract DRF is Context, IERC20, IERC20Metadata {
     }
 
     /// @notice Sets `amount` as the allowance of `spender` over the caller's tokens
-    function approve(address spender, uint256 amount) public virtual override returns (bool) {
+    function approve(address spender, uint256 amount) external virtual override returns (bool) {
         address owner = _msgSender();
         _approve(owner, spender, amount);
         return true;
     }
 
     /// @notice Increases the allowance granted to `spender` by the caller
-    function increaseAllowance(address spender, uint256 addedValue) public virtual returns (bool) {
+    function increaseAllowance(address spender, uint256 addedValue) external virtual returns (bool) {
         address owner = _msgSender();
         _approve(owner, spender, allowance(owner, spender) + addedValue);
         return true;
     }
 
     /// @notice Decreases the allowance granted to `spender` by the caller
-    function decreaseAllowance(address spender, uint256 subtractedValue) public virtual returns (bool) {
+    function decreaseAllowance(address spender, uint256 subtractedValue) external virtual returns (bool) {
         address owner = _msgSender();
         uint256 currentAllowance = allowance(owner, spender);
         require(currentAllowance >= subtractedValue, "DRF::decreaseAllowance: decreased allowance below zero");
@@ -103,7 +103,7 @@ contract DRF is Context, IERC20, IERC20Metadata {
     }
 
     /// @notice Moves `amount` tokens from the caller's account to `to`
-    function transfer(address to, uint256 amount) public virtual override returns (bool) {
+    function transfer(address to, uint256 amount) external virtual override returns (bool) {
         address owner = _msgSender();
         _transfer(owner, to, amount);
         return true;
@@ -114,7 +114,7 @@ contract DRF is Context, IERC20, IERC20Metadata {
         address from, 
         address to, 
         uint256 amount
-    ) public virtual override returns (bool) {
+    ) external virtual override returns (bool) {
         address spender = _msgSender();
         _spendAllowance(from, spender, amount);
         _transfer(from, to, amount);
