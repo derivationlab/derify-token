@@ -2,6 +2,11 @@
 
 Token contracts of Derify protocol.
 
+## Audit Report
+
+- Certik Project Link: [Derify Protocol](https://www.certik.com/projects/derify-protocol)
+- Certik Report: [audit.pdf](https://github.com/derivationlab/derify-token/blob/main/audits/certik/audit.pdf)
+
 ## Development
 
 ### Dependencies
