@@ -1,0 +1,26 @@
+# audits
+audits/
+
+# readme of private token 
+PrivateToken/
+
+# dependencies
+node_modules/
+
+# migrations
+migrations/
+
+# Compiles
+build/
+
+# Tests
+test/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+coverage/
+lint/

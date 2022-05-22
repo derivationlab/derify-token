@@ -1,11 +1,12 @@
 {
-  "name": "derify-token",
+  "name": "@derify/derify-token",
   "version": "1.0.0",
   "description": "Token contracts of Derify protocol",
   "main": "main.js",
-  "author": "",
+  "author": "zhuzhu@derify.org",
   "license": "GPL-3.0-or-later",
   "keywords": [
+    "derify protocol",
     "derify",
     "token"
   ],
@@ -34,5 +35,12 @@
     "prettier-plugin-solidity": "^1.0.0-alpha.52",
     "solidity-coverage": "^0.7.7",
     "truffle-assertions": "^0.9.2"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@zhuzhu.github.com:derivationlab/derify-token.git"
   }
 }
