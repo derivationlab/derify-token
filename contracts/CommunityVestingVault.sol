@@ -102,7 +102,7 @@ contract CommunityVestingVault is Ownable {
         notLocked(Functions.ADD)
     {
         // check variables
-        require(grants[recipient].amount == 0, "TVV_AG: GRANT_EXISTS");
+        require(grants[recipient].amount - grants[recipient].totalClaimed == 0, "TVV_AG: GRANT_EXISTS");
         require(vestingCliffInDays <= CLIFF_MAX_DAYS, "TVV_AG: CLIFF_EXCEED");
         require(vestingDurationInDays <= DURATION_MAX_DAYS, "TVV_AG: DURATION_EXCEED");
         // check vested amount per day
